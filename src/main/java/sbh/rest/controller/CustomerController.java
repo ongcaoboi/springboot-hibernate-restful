@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import sbh.rest.entities.Customer;
@@ -30,6 +31,17 @@ public class CustomerController {
 	public ResponseEntity<List<Customer>> getAll() {
 		try {
 			return new ResponseEntity<>(cr.getAll(), HttpStatus.OK);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/customers/filter")
+	public ResponseEntity<List<Customer>> getFilter(@RequestParam(value = "name", required = true) String name,
+			@RequestParam(value = "sex", required = false) String sex) {
+		try {
+			return new ResponseEntity<>(cr.getFilter(name, sex), HttpStatus.OK);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

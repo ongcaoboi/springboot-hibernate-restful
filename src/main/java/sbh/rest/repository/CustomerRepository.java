@@ -5,8 +5,11 @@ import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +25,23 @@ public class CustomerRepository {
 	public List<Customer> getAll() {		
 		Session session = hbnService.getSessionFactory().openSession();
 		return loadAllData(Customer.class, session);
+	}
+
+	
+	public List<Customer> getFilter(String name, String sex) {
+		Session session = hbnService.getSessionFactory().openSession();
+		Criteria cr = session.createCriteria(Customer.class);
+		
+		if (name != null) {
+			cr.add(Restrictions.like("name", "%" + name + "%"));
+		}
+		
+		if (sex != null) {
+			cr.add(Restrictions.eq("sex", sex));
+		}
+		
+		cr.addOrder(Order.asc("id"));
+		return cr.list();
 	}
 	
 	public Customer getById(int id) {
