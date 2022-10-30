@@ -1,11 +1,13 @@
 package sbh.rest.controller;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +22,7 @@ import sbh.rest.services.JwtService;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin
-public class UserController {
+public class UserController extends AuthController {
 
 	@Autowired
 	private UserRepository ur;
@@ -38,6 +40,29 @@ public class UserController {
 			String token = jwtService.generateTokenUsingUserName(user.getUserName());
 			return new ResponseEntity<>(token, HttpStatus.OK);
 
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/profile")
+	public ResponseEntity<Object> getProfile() {
+		try {
+			User userLogin = getUserLogin();
+			if (userLogin != null) {
+				List<String> roles = new ArrayList<>();
+
+				for (Role role : userLogin.getRoles()) {
+					roles.add(role.getRoleName());
+				}
+
+				UserModel userInfo = new UserModel(userLogin.getUserName(), userLogin.getPassword(), roles);
+
+				return new ResponseEntity<>(userInfo, HttpStatus.OK);
+			}
+
+			return new ResponseEntity<>("", HttpStatus.BAD_REQUEST);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
