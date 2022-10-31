@@ -1,6 +1,5 @@
 # Spring boot - Hibernate - RESTful API example
 
-# Spring boot - Hibernate - RESTful API example
 ## API
 ### Project Struct
 #### Struct
