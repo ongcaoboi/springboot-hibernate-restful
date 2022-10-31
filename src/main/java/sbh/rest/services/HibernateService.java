@@ -53,8 +53,6 @@ public class HibernateService {
 		this.dialect = dialect;
 		this.showSql = showSql;
 		this.dllAuto = dllAuto;
-		
-		System.out.println("hihi");
 
 		initService();
 	}
